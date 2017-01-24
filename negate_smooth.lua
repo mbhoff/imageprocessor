@@ -12,6 +12,7 @@ Date: Spring 2017
 --]]
 
 local il = require "il"
+local math = require "math"
 
 -----------------
 -- IP routines --
@@ -69,9 +70,9 @@ local function bthreshold( img, threshold )
     local temp = r * .30 + g * .59 + b * .11
 
     
-      if temp > threshold
-        then temp = 100
-      else thresh = 0
+      if temp >= threshold
+        then temp = 255
+      else temp = 0
     end
     
       return temp, temp, temp
@@ -81,20 +82,51 @@ end
 
 
 local function posterize( img, levels )
-  return img:mapPixels(function( r, g, b)
+  
+  img = il.RGB2YIQ(img)
+
+  
+  img = img:mapPixels(function( y, i, q)
+      
+      
       
       
       local delta = 255 / levels
+--[[  
+      r = math.floor( r / delta) * delta
+      g = math.floor( g / delta) * delta
+      b = math.floor( b / delta) * delta
+--]]
+
+      y = math.floor (y / delta) * delta
+      
+      
+      
+      
+      
+      return y, i, q
+    
+    end
+  )
+  
+  img = il.YIQ2RGB(img)
+  return img
+  end
+
+ 
+      
+--[[
       print(delta)
       a = {}
       for i = 1, levels do a[i] = i*delta end
       
       local count = 1
-      while r > a[count]
-      do count = count + 1
+      while r > a[count] do
+        count = count + 1
       end
       
       local red = a[count]
+      if red > 255 then red = 255 end
       
       
       count = 1
@@ -103,6 +135,7 @@ local function posterize( img, levels )
       end
         
       local blue = a[count]
+      if blue > 255 then blue = 255 end
       
       
       count = 1
@@ -111,13 +144,16 @@ local function posterize( img, levels )
       end
       
       local green = a[count]
+      if green > 255 then green = 255 end
       
       return red, green, blue
+
+
     end
   )
   end
 
-
+--]]
 
 
 
