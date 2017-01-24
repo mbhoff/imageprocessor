@@ -81,6 +81,29 @@ local function bthreshold( img, threshold )
 end
 
 
+local function brightness( img, brightness )
+  return img:mapPixels(function( r, g, b )
+
+      r = r + brightness
+      g = g + brightness
+      b = b + brightness
+    
+
+    
+      return r, g, b
+    end
+    )
+end
+
+
+
+
+
+
+
+
+
+
 local function posterize( img, levels )
   
   img = il.RGB2YIQ(img)
@@ -196,6 +219,7 @@ return {
   grayscale = grayscale,
   bthreshold = bthreshold,
   posterize = posterize,
+  brightness = brightness,
   
   negate1 = negate1,
   negate2 = negate2,

@@ -31,6 +31,7 @@ imageMenu("Point processes",
     {"My Negate 2", myip.negate2},
     {"My Grayscale", myip.grayscale},
     {"My Posterize", myip.posterize, {{name = "levels", type = "number", displaytype = "spin", default = 8, min = 2, max = 64}}},
+    {"Increase/Decrease Brightness", myip.posterize, {{name = "brightness", type = "number", displaytype = "spin", default = 0, min = -255, max = 255}}},
 
   }
 )
