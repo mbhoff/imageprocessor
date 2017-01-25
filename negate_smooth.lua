@@ -82,18 +82,39 @@ end
 
 
 local function brightness( img, brightness )
-  return img:mapPixels(function( r, g, b )
 
-      r = r + brightness
-      g = g + brightness
-      b = b + brightness
-    
+  
+  img = il.RGB2YIQ(img)
 
-    
-      return r, g, b
+  
+  img = img:mapPixels(function( y, i, q)
+      
+      
+      
+      
+
+      y = y + brightness
+      if y > 255 then do
+        y = 255
+      end
+      end
+      
+      if y < 0 then do
+        y = 0
+      end
+      end
+      
+      
+      
+      
+      
+      return y, i, q
     end
-    )
-end
+  )
+  
+  img = il.YIQ2RGB(img)
+  return img
+  end
 
 
 
