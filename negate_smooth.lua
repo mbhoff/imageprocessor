@@ -219,6 +219,39 @@ local function contrast( img, min, max )
 
 
 
+local function discretePseudocolor( img )
+  
+  img = il.RGB2YIQ(img)
+
+  
+  img = img:mapPixels(function( y, i, q)
+      
+      
+      
+      
+      local delta = 255
+--[[  
+      r = math.floor( r / delta) * delta
+      g = math.floor( g / delta) * delta
+      b = math.floor( b / delta) * delta
+--]]
+
+      y = math.floor (y / delta) * delta
+      
+      
+      
+      
+      
+      return y, i, q
+    
+    end
+  )
+  
+  img = il.YIQ2RGB(img)
+  return img
+  end
+
+
 
 
 
@@ -347,6 +380,7 @@ return {
   contrast = contrast,
   gamma = gamma,
   dynamicRangeCompression = dynamicRangeCompression,
+  discretePseudocolor = discretePseudocolor,
   
   negate1 = negate1,
   negate2 = negate2,
