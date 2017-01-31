@@ -126,9 +126,6 @@ local function gamma( img, g, c )
   img = img:mapPixels(function( y, i, q)
       
       
-      
-      
-
       y = 255 * (y/255)^g
       if y > 255 then do
         y = 255
@@ -140,10 +137,7 @@ local function gamma( img, g, c )
       end
       end
       
-      
-      
-      
-      
+
       return y, i, q
     end
   )
@@ -154,6 +148,34 @@ local function gamma( img, g, c )
 
 
 
+
+
+local function dynamicRangeCompression( img, g, c )
+
+  
+  img = il.RGB2YIQ(img)
+
+  
+  img = img:mapPixels(function( y, i, q)
+      
+      y = 255 * math.log((y/255)+1)
+      if y > 255 then do
+        y = 255
+      end
+      end
+      
+      if y < 0 then do
+        y = 0
+      end
+      end
+            
+      return y, i, q
+    end
+  )
+  
+  img = il.YIQ2RGB(img)
+  return img
+  end
 
 
 
@@ -324,6 +346,7 @@ return {
   brightness = brightness,
   contrast = contrast,
   gamma = gamma,
+  dynamicRangeCompression = dynamicRangeCompression,
   
   negate1 = negate1,
   negate2 = negate2,
