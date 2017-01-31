@@ -25,7 +25,6 @@ local myip = require "negate_smooth"
 
 imageMenu("Point processes",
   {
-    {"Grayscale RGB", il.grayscaleRGB},
     {"Negate", il.negate},
     {"My Negate 1", myip.negate1},
     {"My Negate 2", myip.negate2},
