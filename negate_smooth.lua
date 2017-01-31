@@ -114,7 +114,55 @@ local function brightness( img, brightness )
   
   img = il.YIQ2RGB(img)
   return img
+end
+
+
+local function gamma( img, g, c )
+
+  
+  img = il.RGB2YIQ(img)
+
+  
+  img = img:mapPixels(function( y, i, q)
+      
+      
+      
+      
+
+      y = 255 * (y/255)^g
+      if y > 255 then do
+        y = 255
+      end
+      end
+      
+      if y < 0 then do
+        y = 0
+      end
+      end
+      
+      
+      
+      
+      
+      return y, i, q
+    end
+  )
+  
+  img = il.YIQ2RGB(img)
+  return img
   end
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function contrast( img, min, max )
 
@@ -275,6 +323,7 @@ return {
   posterize = posterize,
   brightness = brightness,
   contrast = contrast,
+  gamma = gamma,
   
   negate1 = negate1,
   negate2 = negate2,
