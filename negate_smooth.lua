@@ -158,7 +158,9 @@ local function dynamicRangeCompression( img, g, c )
   
   img = img:mapPixels(function( y, i, q)
       
-      y = 255 * math.log((y/255)+1)
+      --y = 255 * math.log((y/255)+1)
+      y = (math.log(y + 1) / math.log(256)) * 255
+      
       if y > 255 then do
         y = 255
       end
@@ -278,9 +280,17 @@ local function posterize( img, levels )
       b = math.floor( b / delta) * delta
 --]]
 
-      y = math.floor (y / delta) * delta
+      y = math.floor (y / delta + 1) * delta
       
+      if y > 255 then do
+        y = 255
+      end
+      end
       
+      if y < 0 then do
+        y = 0
+      end
+      end
       
       
       
