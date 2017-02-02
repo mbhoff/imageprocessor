@@ -231,14 +231,14 @@ local function discretePseudocolor( img )
       
       
       
-      local delta = 255
+      local delta = 255 / 8
 --[[  
       r = math.floor( r / delta) * delta
       g = math.floor( g / delta) * delta
       b = math.floor( b / delta) * delta
 --]]
 
-      y = math.floor (y / delta) * delta
+      y = math.floor ( 255 / 8 ) * delta
       
       
       
