@@ -249,39 +249,26 @@ end
 
 local function continuousPseudocolor( img )
   
-  img = il.RGB2YIQ(img)
-  
-  
+      
   local table = {}
-      for i = 1, 255 do table[i] = i*300 % 255 end
-
+      for i = 0, 255 do table[i] = i*300 % 255 end
   
-  img = img:mapPixels(function( y, i, q)
-      
-      
-      
-      
-      local delta = 255 / 8
---[[  
-      r = math.floor( r / delta) * delta
-      g = math.floor( g / delta) * delta
-      b = math.floor( b / delta) * delta
---]]
+  img = img:mapPixels(function( r, g, b)
 
-      y = math.floor ( 255 / 8 ) * delta
+
       
       
+      r = table[ math.floor( (r / 32) ) ]
+      g = table[ math.ceil( (g / 32) ) ]
+      b = table[ math.floor( (b / 32) ) ]
       
       
-      
-      return y, i, q
+      return r, g, b
     
     end
   )
-  
-  img = il.YIQ2RGB(img)
   return img
-  end
+end
 
 
 
