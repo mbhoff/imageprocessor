@@ -35,6 +35,7 @@ imageMenu("Point processes",
     {"Gamma", myip.gamma, {{name = "gamma", type = "number", displaytype = "textbox", default = "1.0"}, {name = "color model", type = "string", default = "rgb"}}},
     {"Dynamic Range Compression", myip.dynamicRangeCompression, {{name = "input", type = "number", displaytype = "textbox", default = "1.0"}, {name = "color model", type = "string", default = "rgb"}}},
     {"Discrete Pseudocolor", myip.discretePseudocolor},
+    {"Continuous Pseudocolor", myip.continuousPseudocolor},
 
   }
 )
