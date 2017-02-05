@@ -36,8 +36,8 @@ imageMenu("Point processes",
     {"Dynamic Range Compression", myip.dynamicRangeCompression, {{name = "input", type = "number", displaytype = "textbox", default = "1.0"}, {name = "color model", type = "string", default = "rgb"}}},
     {"Discrete Pseudocolor", myip.discretePseudocolor},
     {"Continuous Pseudocolor", myip.continuousPseudocolor},
-    {"Contrast Stretch", myip.stretch, {{name = "color model", type = "string", default = "yiq"}}},
-    {"Contrast Specify\tCtrl-H", myip.stretchSpecify, hotkey = "C-H", {{name = "lp", type = "number", displaytype = "spin", default = 1, min = 0, max = 100}, {name = "rp", type = "number", displaytype = "spin", default = 99, min = 0, max = 100}, {name = "color model", type = "string", default = "yiq"}}},
+    {"Contrast Stretch", myip.automatedContrastStretch, {{name = "color model", type = "string", default = "yiq"}}},
+    {"Contrast Specify\tCtrl-H", myip.specifiedContrastStretch, hotkey = "C-H", {{name = "lp", type = "number", displaytype = "spin", default = 1, min = 0, max = 100}, {name = "rp", type = "number", displaytype = "spin", default = 99, min = 0, max = 100}, {name = "color model", type = "string", default = "yiq"}}},
 
   }
 )

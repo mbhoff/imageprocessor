@@ -220,6 +220,82 @@ local function contrast( img, min, max )
   end
 
 
+local function specifiedContrastStretch( img, min, max, colormodel )
+
+  
+  img = il.RGB2YIQ(img)
+
+  local deltax = max - min
+  local deltay = 255
+  local constant = deltay/deltax
+  
+  img = img:mapPixels(function( y, i, q)
+
+      y = constant * (y - min)
+      
+      if y > 255 then do
+        y = 255
+      end
+      end
+      
+      if y < 0 then do
+        y = 0
+      end
+      end
+      
+      return y, i, q
+    end
+  )
+  
+  img = il.YIQ2RGB(img)
+  return img
+  end
+
+
+local function automatedContrastStretch( img, colormodel )
+
+  
+  img = il.RGB2YIQ(img)
+
+  --local deltax = max - min
+  --local deltay = 255
+  --local constant = deltay/deltax
+  
+  img = img:mapPixels(function( y, i, q)
+
+      --y = constant * (y - min)
+      
+      if y > 255 then do
+        y = 255
+      end
+      end
+      
+      if y < 0 then do
+        y = 0
+      end
+      end
+      
+      return y, i, q
+    end
+  )
+  
+  img = il.YIQ2RGB(img)
+  return img
+  end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function discretePseudocolor( img )
   
@@ -413,7 +489,7 @@ return {
   dynamicRangeCompression = dynamicRangeCompression,
   discretePseudocolor = discretePseudocolor,
   continuousPseudocolor = continuousPseudocolor,
-  contrastStretch = contrastStretch,
+  specifiedContrastStretch = specifiedContrastStretch,
   automatedContrastStretch = automatedContrastStretch,
   
   negate1 = negate1,
