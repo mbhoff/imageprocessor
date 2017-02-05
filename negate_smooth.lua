@@ -250,17 +250,21 @@ end
 local function continuousPseudocolor( img )
   
       
-  local table = {}
-      for i = 0, 255 do table[i] = i*300 % 255 end
+  local redTable = {}
+      for i = 0, 255 do redTable[i] = i*300 % 255 end
   
+  local greenTable = {}
+      for j = 0, 255 do greenTable[j] = j*234 % 255 end
+
+  local blueTable = {}
+      for k = 0, 255 do blueTable[k] = k*737 % 255 end
+
   img = img:mapPixels(function( r, g, b)
 
 
-      
-      
-      r = table[ math.floor( (r / 32) ) ]
-      g = table[ math.ceil( (g / 32) ) ]
-      b = table[ math.floor( (b / 32) ) ]
+      r = redTable[ math.floor( (r / 32) ) ]
+      g = greenTable[ math.ceil( (g / 32) ) ]
+      b = blueTable[ math.floor( (b / 32) ) ]
       
       
       return r, g, b
