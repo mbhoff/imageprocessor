@@ -413,6 +413,8 @@ return {
   dynamicRangeCompression = dynamicRangeCompression,
   discretePseudocolor = discretePseudocolor,
   continuousPseudocolor = continuousPseudocolor,
+  contrastStretch = contrastStretch,
+  automatedContrastStretch = automatedContrastStretch,
   
   negate1 = negate1,
   negate2 = negate2,
