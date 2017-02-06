@@ -329,13 +329,13 @@ local function continuousPseudocolor( img )
   img = grayscale(img);
       
   local redTable = {}
-      for i = 0, 255 do redTable[i] = i*.7 end
+      for i = 0, 255 do redTable[i] = math.floor((i+6)) end
   
   local greenTable = {}
-      for j = 0, 255 do greenTable[j] = math.log(j*8) end
+      for j = 0, 255 do greenTable[j] = math.floor((j-1)*3.5) end
 
   local blueTable = {}
-      for k = 0, 255 do blueTable[k] = math.log(k*8) end
+      for k = 0, 255 do blueTable[k] = math.floor((k-3)*4) end
 
   img = img:mapPixels(function( r, g, b)
       
@@ -344,6 +344,39 @@ local function continuousPseudocolor( img )
       r = redTable[temp]
       g = greenTable[temp]
       b = blueTable[temp]
+      
+      if r > 255 then do
+        r = 255
+      end
+      end
+      
+      if r < 0 then do
+        r = 0
+      end
+      end
+    
+      if g > 255 then do
+        g = 255
+      end
+      end
+      
+      if g < 0 then do
+        g = 0
+      end
+      end
+    
+    
+      if b > 255 then do
+        b = 255
+      end
+      end
+      
+      if r < 0 then do
+        r = 0
+      end
+      end
+    
+    
       
       
       return r, g, b
