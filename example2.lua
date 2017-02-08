@@ -38,6 +38,9 @@ imageMenu("Point processes",
     {"Continuous Pseudocolor", myip.continuousPseudocolor},
     {"Contrast Stretch", myip.automatedContrastStretch, {{name = "color model", type = "string", default = "yiq"}}},
     {"Contrast Specify\tCtrl-H", myip.specifiedContrastStretch, hotkey = "C-H", {{name = "lp", type = "number", displaytype = "spin", default = 1, min = 0, max = 100}, {name = "rp", type = "number", displaytype = "spin", default = 99, min = 0, max = 100}, {name = "color model", type = "string", default = "yiq"}}},
+    {"Display Histogram", il.showHistogram,
+       {{name = "color model", type = "string", default = "yiq"}}},
+
 
   }
 )
