@@ -268,8 +268,6 @@ local function discretePseudocolor( img )
       for i = 0, 8 do table[i] = i*300 % 255 end
   
   img = img:mapPixels(function( r, g, b)
-
-
       
       
       r = table[ math.floor( (r / 32) ) ]
@@ -289,7 +287,6 @@ end
 
 
 local function continuousPseudocolor( img )
-  
   
   img = grayscale(img);
       
@@ -328,6 +325,7 @@ end
 
 local function bitplaneSlice( img, plane )
   
+  img = grayscale(img)
   
   local maskTable = {}
     maskTable[0] = 1
@@ -335,29 +333,34 @@ local function bitplaneSlice( img, plane )
     maskTable[2] = 4
     maskTable[3] = 8
     maskTable[4] = 16
-    maskTable[5] = 32    
+    maskTable[5] = 32
     maskTable[6] = 64
     maskTable[7] = 128
     
-
-    
   img = img:mapPixels(function( r, g, b)
       
+      if bit32.band(r, maskTable[plane]) > 0 then r = 255
+      else r = 0
+      end
       
-      r = bit32.band(r, maskTable[plane])
-      g = bit32.band(g, maskTable[plane])
-      b = bit32.band(b, maskTable[plane])
+      if bit32.band(g, maskTable[plane]) > 0 then g = 255
+      else g = 0
+      end
       
+      if bit32.band(b, maskTable[plane]) > 0 then b = 255
+      else b = 0
+      end
+      
+      r = clipValue(r)
+      g = clipValue(g)
+      b = clipValue(b)
+            
       return r, g, b
     
     end
   )
   return img
   end
-
-
-
-
 
 
 
