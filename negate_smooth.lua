@@ -350,11 +350,7 @@ local function bitplaneSlice( img, plane )
       if bit32.band(b, maskTable[plane]) > 0 then b = 255
       else b = 0
       end
-      
-      r = clipValue(r)
-      g = clipValue(g)
-      b = clipValue(b)
-            
+          
       return r, g, b
     
     end
