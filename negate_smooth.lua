@@ -326,6 +326,36 @@ end
 
 
 
+local function bitplaneSlice( img, plane )
+  
+  
+  local maskTable = {}
+    maskTable[0] = 1
+    maskTable[1] = 2
+    maskTable[2] = 4
+    maskTable[3] = 8
+    maskTable[4] = 16
+    maskTable[5] = 32    
+    maskTable[6] = 64
+    maskTable[7] = 128
+    
+
+    
+  img = img:mapPixels(function( r, g, b)
+      
+      
+      r = bit32.band(r, maskTable[plane])
+      g = bit32.band(g, maskTable[plane])
+      b = bit32.band(b, maskTable[plane])
+      
+      return r, g, b
+    
+    end
+  )
+  return img
+  end
+
+
 
 
 
@@ -456,6 +486,7 @@ return {
   continuousPseudocolor = continuousPseudocolor,
   specifiedContrastStretch = specifiedContrastStretch,
   automatedContrastStretch = automatedContrastStretch,
+  bitplaneSlice = bitplaneSlice,
   
   negate1 = negate1,
   negate2 = negate2,
