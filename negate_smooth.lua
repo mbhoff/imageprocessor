@@ -109,24 +109,8 @@ local function brightness( img, brightness )
   
   img = img:mapPixels(function( y, i, q)
       
-      
-      
-      
-
       y = y + brightness
-      if y > 255 then do
-        y = 255
-      end
-      end
-      
-      if y < 0 then do
-        y = 0
-      end
-      end
-      
-      
-      
-      
+      y = clipValue(y)
       
       return y, i, q
     end
