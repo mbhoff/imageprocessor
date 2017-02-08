@@ -14,6 +14,26 @@ Date: Spring 2017
 local il = require "il"
 local math = require "math"
 
+--[[  Function to clip values
+      greater than 255
+      and less than 0
+]]--      
+local function clipValue( val )
+  
+    if val > 255 then do
+      val = 255
+    end
+    end
+      
+    if val < 0 then do
+       val = 0
+    end
+    end
+    
+    return val
+    
+  end
+
 -----------------
 -- IP routines --
 -----------------
@@ -323,6 +343,7 @@ end
 
 
 
+
 local function continuousPseudocolor( img )
   
   
@@ -344,41 +365,11 @@ local function continuousPseudocolor( img )
       r = redTable[temp]
       g = greenTable[temp]
       b = blueTable[temp]
-      
-      if r > 255 then do
-        r = 255
-      end
-      end
-      
-      if r < 0 then do
-        r = 0
-      end
-      end
+
+      r = clipValue(r)
+      g = clipValue(g)
+      b = clipValue(b)
     
-      if g > 255 then do
-        g = 255
-      end
-      end
-      
-      if g < 0 then do
-        g = 0
-      end
-      end
-    
-    
-      if b > 255 then do
-        b = 255
-      end
-      end
-      
-      if r < 0 then do
-        r = 0
-      end
-      end
-    
-    
-      
-      
       return r, g, b
     
     end
