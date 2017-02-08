@@ -131,18 +131,10 @@ local function gamma( img, g, c )
       
       
       y = 255 * (y/255)^g
-      if y > 255 then do
-        y = 255
-      end
-      end
+      y = clipValue(y)
       
-      if y < 0 then do
-        y = 0
-      end
-      end
-      
-
       return y, i, q
+      
     end
   )
   
@@ -165,15 +157,7 @@ local function dynamicRangeCompression( img, g, c )
       --y = 255 * math.log((y/255)+1)
       y = (math.log(y + 1) / math.log(256)) * 255
       
-      if y > 255 then do
-        y = 255
-      end
-      end
-      
-      if y < 0 then do
-        y = 0
-      end
-      end
+      y = clipValue(y)
             
       return y, i, q
     end
@@ -205,15 +189,7 @@ local function contrast( img, min, max )
 
       y = constant * (y - min)
       
-      if y > 255 then do
-        y = 255
-      end
-      end
-      
-      if y < 0 then do
-        y = 0
-      end
-      end
+      y = clipValue(y)
       
       return y, i, q
     end
@@ -237,15 +213,7 @@ local function specifiedContrastStretch( img, min, max, colormodel )
 
       y = constant * (y - min)
       
-      if y > 255 then do
-        y = 255
-      end
-      end
-      
-      if y < 0 then do
-        y = 0
-      end
-      end
+      y = clipValue(y)
       
       return y, i, q
     end
@@ -269,15 +237,7 @@ local function automatedContrastStretch( img, colormodel )
 
       --y = constant * (y - min)
       
-      if y > 255 then do
-        y = 255
-      end
-      end
-      
-      if y < 0 then do
-        y = 0
-      end
-      end
+      y = clipValue(y)
       
       return y, i, q
     end
@@ -392,15 +352,7 @@ local function posterize( img, levels )
 
       y = math.floor (y / delta + 1) * delta
       
-      if y > 255 then do
-        y = 255
-      end
-      end
-      
-      if y < 0 then do
-        y = 0
-      end
-      end
+      y = clipvalue(y)
       
       
       
