@@ -292,6 +292,48 @@ end
 
 
 
+local function imageSubtraction( img1, img2 )
+      
+    if img1.height ~= img2.height or img1.width ~= img2.width
+    then return img1
+    end
+      
+      
+    local nrows, ncols = img1.height, img1.width
+    
+    for r = 0, nrows-1 do
+      for c = 0, ncols-1 do
+        -- negate each RGB channel
+        for ch = 0, 2 do
+          img1:at(r,c).rgb[ch] = img1:at(r,c).rgb[ch] - img2:at(r,c).rgb[ch]
+        end
+      end
+    end
+      
+  return img1
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function continuousPseudocolor( img )
   
   img = grayscale(img);
@@ -367,9 +409,21 @@ local function bitplaneSlice( img, plane )
 
 local function histogramWClipping(img, clipval, colormodel)
   
+  --make histogram
+  img = il.RGB2YIQ(img)
+  
+  local table = {}
+  for i = 1, 256 do table[i] = 0 end
+  
+  img:mapPixels(function( y, i, q)
+      table[y+1] = table[y+1] + 1
+      return y, i, q
+    end
+  )
+  
+  --sum will be used as a count of total number of pixels
   local sum = 0
   
-  --sum will be used as total number of pixels
   
   maxval = (img.width * img.height) * (clipval / 100)
   
@@ -384,7 +438,7 @@ local function histogramWClipping(img, clipval, colormodel)
       return y, i, q
       
     end 
-
+    
   )
   
     
@@ -410,7 +464,6 @@ local function histogramWClipping(img, clipval, colormodel)
   img = il.YIQ2RGB(img)
   
   return img
-  
   
 end
 
@@ -581,6 +634,7 @@ return {
   bitplaneSlice = bitplaneSlice,
   histogramEqualization = histogramEqualization,
   histogramWClipping = histogramWClipping,
+  imageSubtraction = imageSubtraction,
   
   negate1 = negate1,
   negate2 = negate2,
