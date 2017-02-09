@@ -1,11 +1,11 @@
 --[[
 
-  * * * * example2.lua * * * *
+  * * * * menu.lua * * * *
 
 Lua image processing program: performs image negation and smoothing.
-Menu routines are in example2.lua, IP routines are negate_smooth.lua.
+Menu routines are in menu.lua, IP routines are functions.lua.
 
-Author: John Weiss, Ph.D.
+Authors: Mark Buttenhoff
 Class: CSC442/542 Digital Image Processing
 Date: Spring 2017
 
@@ -13,7 +13,7 @@ Date: Spring 2017
 
 -- LuaIP image processing routines
 require "ip"
-require "visual"
+local viz = require "visual"
 local il = require "il"
 
 -- my routines
@@ -26,11 +26,9 @@ local myip = require "functions"
 imageMenu("Point processes",
   {
     
-    {"Negate", il.negate},
+    {"Negate", myip.negate},
     
-    {"My Negate 1", myip.negate1},
-    
-    {"My Negate 2", myip.negate2},
+    {"Binary Threshold", myip.bthreshold, {{name = "threshold", type = "number", displaytype = "slider", default =      128, min = 0, max = 255}}},
     
     {"My Grayscale", myip.grayscale},
     
@@ -62,29 +60,18 @@ imageMenu("Point processes",
   {"Histogram Equalize Clip", myip.histogramWClipping,
       {{name = "clip %", type = "number", displaytype = "textbox", default = "1.0"},
        {name = "color model", type = "string", default = "yiq"}}},
+  
   {"Image Subtraction", myip.imageSubtraction, {{name = "image", type = "image"}}},
-  
-  
-  
-  
-  
-  
-  
-  
   
 }  
 )
 
-imageMenu("Neighborhood processes",
-  {
-    {"Weighted 3x3 Smooth", il.smooth},
-    {"My 3x3 Smooth", myip.smooth},
-  }
-)
 
-imageMenu("Misc",
+imageMenu("Help",
   {
-    {"Binary Threshold", myip.bthreshold, {{name = "threshold", type = "number", displaytype = "slider", default = 128, min = 0, max = 255}}},
+    {"Help", viz.imageMessage( "Help", "This program contains several image point processing functions" )},
+    {"About", viz.imageMessage( "LuaIP " .. viz.VERSION, "Authors: Mark Buttenhoff, John Weiss, and Alex Iverson\nClass: CSC442 Digital Image Processing\nDate: Spring 2017" )},
+    {"Debug Console", viz.imageDebug},
   }
 )
 
