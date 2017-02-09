@@ -17,7 +17,7 @@ require "visual"
 local il = require "il"
 
 -- my routines
-local myip = require "negate_smooth"
+local myip = require "functions"
 
 -----------
 -- menus --
