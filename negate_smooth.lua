@@ -146,7 +146,7 @@ local function gamma( img, g, c )
 
 
 
-local function dynamicRangeCompression( img, g, c )
+local function logTransformation( img, g, c )
 
   
   img = il.RGB2YIQ(img)
@@ -176,7 +176,7 @@ local function dynamicRangeCompression( img, g, c )
 
 
 
-local function contrast( img, min, max )
+local function contrastAdjustmentWithLinearRamp( img, min, max )
 
   
   local img = il.RGB2YIQ(img)
@@ -527,7 +527,7 @@ local function posterize( img, levels )
 
       y = math.floor (y / delta + 1) * delta
       
-      y = clipvalue(y)
+      y = clipValue(y)
       
       
       
@@ -624,9 +624,9 @@ return {
   bthreshold = bthreshold,
   posterize = posterize,
   brightness = brightness,
-  contrast = contrast,
+  contrastAdjustmentWithLinearRamp = contrastAdjustmentWithLinearRamp,
   gamma = gamma,
-  dynamicRangeCompression = dynamicRangeCompression,
+  logTransformation = logTransformation,
   discretePseudocolor = discretePseudocolor,
   continuousPseudocolor = continuousPseudocolor,
   specifiedContrastStretch = specifiedContrastStretch,

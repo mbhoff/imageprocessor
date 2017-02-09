@@ -25,25 +25,41 @@ local myip = require "negate_smooth"
 
 imageMenu("Point processes",
   {
+    
     {"Negate", il.negate},
+    
     {"My Negate 1", myip.negate1},
+    
     {"My Negate 2", myip.negate2},
+    
     {"My Grayscale", myip.grayscale},
+    
     {"My Posterize", myip.posterize, {{name = "levels", type = "number", displaytype = "spin", default = 8, min = 2, max = 64}}},
+    
     {"Increase/Decrease Brightness", myip.brightness, {{name = "brightness", type = "number", displaytype = "spin", default = 0, min = -255, max = 255}}},
-    {"Contrast Stretch", myip.contrast, {{name = "min", type = "number", displaytype = "spin", default = 50, min = 0, max = 255},{name = "max", type = "number", displaytype = "spin", default = 100, min = 0, max = 255}}},
-    {"Gamma", myip.gamma, {{name = "gamma", type = "number", displaytype = "textbox", default = "1.0"}, {name = "color model", type = "string", default = "rgb"}}},
-    {"Dynamic Range Compression", myip.dynamicRangeCompression, {{name = "input", type = "number", displaytype = "textbox", default = "1.0"}, {name = "color model", type = "string", default = "rgb"}}},
-    {"Discrete Pseudocolor", myip.discretePseudocolor},
-    {"Continuous Pseudocolor", myip.continuousPseudocolor},
-    {"Contrast Stretch", myip.automatedContrastStretch, {{name = "color model", type = "string", default = "yiq"}}},
-    {"Contrast Specify\tCtrl-H", myip.specifiedContrastStretch, hotkey = "C-H", {{name = "lp", type = "number", displaytype = "spin", default = 1, min = 0, max = 100}, {name = "rp", type = "number", displaytype = "spin", default = 99, min = 0, max = 100}, {name = "color model", type = "string", default = "yiq"}}},
-    {"Display Histogram", il.showHistogram,
+  
+  {"Contrast Adjustment with Linear Ramp", myip.contrastAdjustmentWithLinearRamp, {{name = "min", type = "number",    displaytype = "spin", default = 50, min = 0, max = 255},{name = "max", type = "number", displaytype = "spin",     default = 100, min = 0, max = 255}}},
+  
+  {"Gamma", myip.gamma, {{name = "gamma", type = "number", displaytype = "textbox", default = "1.0"}, {name =       "color model", type = "string", default = "rgb"}}},
+  {"Log Transformation", myip.logTransformation, {{name = "input", type = "number", displaytype = "textbox",        default = "1.0"}, {name = "color model", type = "string", default = "rgb"}}},
+  
+  {"Discrete Pseudocolor", myip.discretePseudocolor},
+  
+  {"Continuous Pseudocolor", myip.continuousPseudocolor},
+  
+  {"Automated Contrast Stretch", myip.automatedContrastStretch, {{name = "color model", type = "string", default      = "yiq"}}},
+  
+  {"Specified Contrast Stretch\tCtrl-H", myip.specifiedContrastStretch, hotkey = "C-H", {{name = "lp", type =     "number", displaytype = "spin", default = 1, min = 0, max = 100}, {name = "rp", type = "number", displaytype =      "spin", default = 99, min = 0, max = 100}, {name = "color model", type = "string", default = "yiq"}}},
+  
+  {"Display Histogram", il.showHistogram,
        {{name = "color model", type = "string", default = "yiq"}}},
-    {"Bitplane Slice", myip.bitplaneSlice,
+  
+  {"Bitplane Slice", myip.bitplaneSlice,
       {{name = "plane", type = "number", displaytype = "spin", default = 7, min = 0, max = 7}}},
-    {"Histogram Equalize", myip.histogramEqualization, {{name = "color model", type = "string", default = "yiq"}}},
-    {"Histogram Equalize Clip", myip.histogramWClipping, 
+  
+  {"Histogram Equalize", myip.histogramEqualization, {{name = "color model", type = "string", default = "yiq"}}},
+  
+  {"Histogram Equalize Clip", myip.histogramWClipping,
       {{name = "clip %", type = "number", displaytype = "textbox", default = "1.0"},
        {name = "color model", type = "string", default = "yiq"}}},
   {"Image Subtraction", myip.imageSubtraction, {{name = "image", type = "image"}}},
