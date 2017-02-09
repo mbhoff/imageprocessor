@@ -271,8 +271,8 @@ local function automatedContrastStretch( img, colormodel )
   img = il.RGB2YIQ(img)
   
   for r, c in img:pixels() do
-    if img:at(r,c).yiq[1] < min then min = img:at(r,c).yiq[1]
-  elseif img:at(r,c).yiq[1] > max then max = img:at(r,c).yiq[1]
+    if img:at(r,c).yiq[0] < min then min = img:at(r,c).yiq[0]
+  elseif img:at(r,c).yiq[0] > max then max = img:at(r,c).yiq[0]
     end
   end
   
@@ -296,17 +296,15 @@ local function automatedContrastStretch( img, colormodel )
 
 
 local function specifiedContrastStretch( img, min, max, colormodel )
-
-  
+    
   img = il.RGB2YIQ(img)
-
-  local deltax = max - min
-  local deltay = 255
-  local constant = deltay/deltax
   
+
   img = img:mapPixels(function( y, i, q)
 
-      y = constant * (y - min)
+      --y = constant * (y - min)
+      
+      y = (y-min) * (255/(max-min))
       
       y = clipValue(y)
       
@@ -463,10 +461,10 @@ local function imageSubtraction( img1, img2 )
     end
       
       
-    local nrows, ncols = img1.height, img1.width
+    local rows, cols = img1.height, img1.width
     
-    for r = 0, nrows-1 do
-      for c = 0, ncols-1 do
+    for r = 0, rows-1 do
+      for c = 0, cols-1 do
         -- negate each RGB channel
         for ch = 0, 2 do
           img1:at(r,c).rgb[ch] = img1:at(r,c).rgb[ch] - img2:at(r,c).rgb[ch]
