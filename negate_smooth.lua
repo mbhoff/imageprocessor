@@ -225,17 +225,23 @@ local function specifiedContrastStretch( img, min, max, colormodel )
 
 
 local function automatedContrastStretch( img, colormodel )
-
+  
+  local min = 255
+  local max = 0
   
   img = il.RGB2YIQ(img)
-
-  --local deltax = max - min
-  --local deltay = 255
-  --local constant = deltay/deltax
+  
+  for r, c in img:pixels() do
+    if img:at(r,c).yiq[1] < min then min = img:at(r,c).yiq[1]
+  elseif img:at(r,c).yiq[1] > max then max = img:at(r,c).yiq[1]
+    end
+  end
   
   img = img:mapPixels(function( y, i, q)
 
       --y = constant * (y - min)
+      
+      y = y * (255/(max-min))
       
       y = clipValue(y)
       
@@ -359,8 +365,95 @@ local function bitplaneSlice( img, plane )
   end
 
 
+local function histogramWClipping(img, clipval, colormodel)
+  
+  local sum = 0
+  
+  --sum will be used as total number of pixels
+  
+  maxval = (img.width * img.height) * (clipval / 100)
+  
+  img:mapPixels(function( y, i, q)
+      
+      table[y+1] = table[y+1] + 1
+      
+      if table[y+1] > maxval then table[y+1] = maxval end
+      
+      sum = sum + 1
+      
+      return y, i, q
+      
+    end 
+
+  )
+  
+    
+  local a = 256 / sum
+  
+  local lookuptable = {}
+  lookuptable[1] = a * table[1]
+  for i = 2, 256 do 
+    lookuptable[i] = lookuptable[i-1] + a * table[i]
+    lookuptable[i] = clipValue(lookuptable[i])
+    end
+  
+  --get probabilities, map to intensities
+  img = img:mapPixels(function( y, i, q)
+      
+    y = lookuptable[y+1]
+
+    return y, i, q
+  
+    end
+  )
+
+  img = il.YIQ2RGB(img)
+  
+  return img
+  
+  
+end
 
 
+local function histogramEqualization(img, colormodel)
+  
+  --make histogram
+  img = il.RGB2YIQ(img)
+  
+  local table = {}
+  for i = 1, 256 do table[i] = 0 end
+  
+  img:mapPixels(function( y, i, q)
+      table[y+1] = table[y+1] +1
+      return y, i, q
+    end
+  )
+  
+  local a = 256 / (img.width * img.height)
+  
+  local lookuptable = {}
+  lookuptable[1] = a * table[1]
+  for i = 2, 256 do 
+    lookuptable[i] = lookuptable[i-1] + a * table[i]
+    lookuptable[i] = clipValue(lookuptable[i])
+    end
+  
+  --get probabilities, map to intensities
+  img = img:mapPixels(function( y, i, q)
+      
+  y = lookuptable[y+1]
+
+  return y, i, q
+  
+  end
+  )
+
+  img = il.YIQ2RGB(img)
+  
+  return img
+  
+end  
+  
 
 local function posterize( img, levels )
   
@@ -486,6 +579,8 @@ return {
   specifiedContrastStretch = specifiedContrastStretch,
   automatedContrastStretch = automatedContrastStretch,
   bitplaneSlice = bitplaneSlice,
+  histogramEqualization = histogramEqualization,
+  histogramWClipping = histogramWClipping,
   
   negate1 = negate1,
   negate2 = negate2,

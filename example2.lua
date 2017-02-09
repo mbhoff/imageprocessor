@@ -42,7 +42,8 @@ imageMenu("Point processes",
        {{name = "color model", type = "string", default = "yiq"}}},
     {"Bitplane Slice", myip.bitplaneSlice,
       {{name = "plane", type = "number", displaytype = "spin", default = 7, min = 0, max = 7}}},
-
+    {"Histogram Equalize", myip.histogramEqualization, {{name = "color model", type = "string", default = "yiq"}}},
+    {"Histogram Equalize Clip", myip.histogramWClipping, {{name = "clip %", type = "number", displaytype = "textbox", default = "1.0"}, {name = "color model", type = "string", default = "yiq"}}},
   }
 )
 
