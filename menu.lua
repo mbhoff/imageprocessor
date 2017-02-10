@@ -69,10 +69,9 @@ imageMenu("Point processes",
 
 imageMenu("Help",
   {
-    {"Help", viz.imageMessage( "Help", "This program contains several image point processing functions" )},
+    {"Help", viz.imageMessage( "Help", "Select any of the following point processing functions in the menu to perform the operation on the image in the current tab:\n\nNegate: Inverts the image\n\nGrayscale: Convert image to grayscale\n\nBinary Threshold: Converts image to a black and white binary image. Inputs - threshold (0-255)\n\nPosterize: Converts image to a posterized image. Inputs - number of posterization levels (2-64)\n\nBrightness: Increases or decreases image brightness. Input brightness adjustment value (-255 to +255)\n\nContrast Adjustment With Linear Ramp:\nInputs - ramp min and max (0-255)\n\nGamma: Adjusts image gamma. Input gamma increase or decrease value.\n\nLog Transformation\n\nDiscrete Pseudocolor\n\nContinuous Pseudocolor\n\nSpecified Contrast Stretch\n\nAutomated Contrast Stretch\n\nBitplane Slice: enter bit plane (0-7)\n\nHistogram Equalization\n\nHistogram Equalization With Clipping: input percentage of intensities to clip\n\nImage Subtraction: Select image to subtract. Image must have the same dimensions as image in the current tab." )},
     
     {"About", viz.imageMessage( "LuaIP " .. viz.VERSION, "Authors: Mark Buttenhoff, John Weiss, and Alex Iverson\nClass: CSC442 Digital Image Processing\nDate: Spring 2017" )},
-
   }
 )
 
