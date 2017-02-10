@@ -160,19 +160,17 @@ end
 Function: contrastAdjustmentWithLinearRamp
 Contrast is adjusted with a linear
 ramp between the min and max values passed in.
+The y intensity of the pixels is set equal to
+( 255 / (ramp max - ramp min) ) * (y - ramp min)
 --]]
 local function contrastAdjustmentWithLinearRamp( img, min, max )
 
   
   local img = il.RGB2YIQ(img)
-
-  local deltax = max - min
-  local deltay = 255
-  local constant = deltay/deltax
   
   img = img:mapPixels(function( y, i, q)
 
-      y = constant * (y - min)
+      y =  ( 255 / (max - min) ) * (y - min)
       
       y = clipValue(y)
       
@@ -403,9 +401,26 @@ local function specifiedContrastStretch( img, min, max, colormodel )
 Function: histogramEqualization
 Equalizes the image intensities by creating a
 histogram of the intensity values, and a lookupTable
-of cummulative probability values for each intensity.
-The intensities are normalized with the cumulative
-probabilities.
+of probability values for each intensity.
+The values of the lookup table are assigned through
+a recursive assignment:
+
+lookuptable[i] = histogram[i] * alpha + lookuptable[i-1]
+
+The first value in the lookup table is set equal to
+the first value in the histogram * alpha(the range of values in
+the image / number of pixels in the image)
+
+Then the rest of the values in the lookup tables are set equal
+to their cooresponding value in the histogram table * alpha +
+the previous value in the lookuptable. This produces a table
+of cumulative probability values for each intensity.
+
+Finally the intensities are mapped based on their values in the
+lookuptable. In this case because the histogram and lookup
+table are 1 indexed, and the pixel rows and columns are 0 indexed,
+the pixel intensity values are are mapped to their value at
+lookuptable[y+1] 
 
 --]]
 local function histogramEqualization(img, colormodel)
@@ -450,10 +465,14 @@ end
 --[[
 Function: histogramEqualizationWithClipping
 Equalizes the image intensities and clips the percentage
-of pixel intensities passed in. Creates a histogram of the intensity
-values, and a lookupTable of cummulative probability values for each intensity.
-The intensities are normalized with the cumulative
-probabilities.
+of pixels specified. Creates a histogram of the intensity
+values, clipping each intensity frequency to
+(pixels in image)*(clip percentage/100).
+The sum of all frequencies in the histogram is counted
+and used as the new number of pixels when calculating the alpha value
+for the cumulative distribution function. The lookupTable stores
+cummulative probability values for each intensity.
+The intensities are normalized, and set equal to the y value of yiq image.
 --]]
 local function histogramEqualizationWithClipping(img, clipval, colormodel)
 
@@ -490,7 +509,7 @@ local function histogramEqualizationWithClipping(img, clipval, colormodel)
   
   for i = 2, 256 do 
     lookUpTable[i] = math.floor( (lookUpTable[i-1] + a * histogram[i])+0.5)
-    lookUpTable[i] = clipValue(lookUpTable[i])
+    --lookUpTable[i] = clipValue(lookUpTable[i])
     end
   
   --get probabilities, map to intensities
@@ -513,21 +532,15 @@ end
 --[[
 Function: bitplaneSlice
 Gets the image at the bitplane specified.
-In this case it is the 0-7th bitplane.
-To get the image at that bitplane,
-the image is converted to grayscale,
-and the grey values of each pixel are
-bitwise anded with a bitstring with the bit
-of the desired plane flipped.
+In this case it is the 0 to 7th bitplane.
+To get the image in that bitplane, the image is converted to grayscale,
+and the grey values of each pixel are bitwise anded
+with a bitstring with the bit of the desired plane flipped.
 
-The result of this bitwise and determines whether
-there is a color value in that plane or not.
-
-Since this is a subtractive color system,
-anything that is nonzero is color.
-
-We set all color values to white, to produce
-a binary image.
+The result of this bitwise and gives either 0 or a number.
+If the result is greater than 0, the value is mapped to 255 (white).
+Otherwise the pixel value is mapped to 0 (black).
+This produces a black and white binary image.
 
 --]]
 local function bitplaneSlice( img, plane )
@@ -535,14 +548,14 @@ local function bitplaneSlice( img, plane )
   img = grayscale(img)
   
   local maskTable = {}
-    maskTable[0] = 1
-    maskTable[1] = 2
-    maskTable[2] = 4
-    maskTable[3] = 8
-    maskTable[4] = 16
-    maskTable[5] = 32
-    maskTable[6] = 64
-    maskTable[7] = 128
+    maskTable[0] = 1   --00000001
+    maskTable[1] = 2   --00000010
+    maskTable[2] = 4   --00000100
+    maskTable[3] = 8   --00001000
+    maskTable[4] = 16  --00010000
+    maskTable[5] = 32  --00100000
+    maskTable[6] = 64  --01000000
+    maskTable[7] = 128 --10000000
     
   img = img:mapPixels(function( r, g, b)
       
