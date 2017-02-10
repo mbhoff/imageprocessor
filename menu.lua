@@ -57,7 +57,7 @@ imageMenu("Point processes",
   
   {"Histogram Equalize", myip.histogramEqualization, {{name = "color model", type = "string", default = "yiq"}}},
   
-  {"Histogram Equalize Clip", myip.histogramWClipping,
+  {"Histogram Equalize Clip", myip.histogramEqualizationWithClipping,
       {{name = "clip %", type = "number", displaytype = "textbox", default = "1.0"},
        {name = "color model", type = "string", default = "yiq"}}},
   

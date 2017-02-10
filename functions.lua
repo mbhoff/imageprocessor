@@ -299,6 +299,15 @@ local function specifiedContrastStretch( img, min, max, colormodel )
     
   img = il.RGB2YIQ(img)
   
+  
+  local histogram = {}
+  for i = 1, 256 do histogram[i] = 0 end
+  
+  img:mapPixels(function( y, i, q)
+      histogram[y+1] = histogram[y+1] + 1
+      return y, i, q
+    end
+  )
 
   img = img:mapPixels(function( y, i, q)
 
@@ -319,7 +328,7 @@ local function specifiedContrastStretch( img, min, max, colormodel )
 
 
 local function histogramEqualization(img, colormodel)
-  
+  print("HERE I AM!")
   --make histogram
   img = il.RGB2YIQ(img)
   
@@ -358,8 +367,8 @@ end
   
   
   
-local function histogramWClipping(img, clipval, colormodel)
-  
+local function histogramEqualizationWithClipping(img, clipval, colormodel)
+  print("HERE I AM!")
   --make histogram
   img = il.RGB2YIQ(img)
   
@@ -376,29 +385,24 @@ local function histogramWClipping(img, clipval, colormodel)
   local sum = 0
   
   
-  maxval = (img.width * img.height) * (clipval / 100)
-  
-  img:mapPixels(function( y, i, q)
+  local maxval = (img.width * img.height) * (clipval / 100)
+  print(clipval)
+  print(maxval)
+  for i = 1, 256 do      
+      if table[i] > maxval then table[i] = maxval end
       
-      table[y+1] = table[y+1] + 1
-      
-      if table[y+1] > maxval then table[y+1] = maxval end
-      
-      sum = sum + 1
-      
-      return y, i, q
+      sum = sum + table[i]
       
     end 
-    
-  )
   
     
   local a = 256 / sum
   
   local lookuptable = {}
-  lookuptable[1] = a * table[1]
+  lookuptable[1] = math.floor((a * table[1])+0.5)
+  
   for i = 2, 256 do 
-    lookuptable[i] = lookuptable[i-1] + a * table[i]
+    lookuptable[i] = math.floor( (lookuptable[i-1] + a * table[i])+0.5)
     lookuptable[i] = clipValue(lookuptable[i])
     end
   
@@ -495,6 +499,6 @@ return {
   automatedContrastStretch = automatedContrastStretch,
   bitplaneSlice = bitplaneSlice,
   histogramEqualization = histogramEqualization,
-  histogramWClipping = histogramWClipping,
+  histogramEqualizationWithClipping = histogramEqualizationWithClipping,
   imageSubtraction = imageSubtraction,
 }
