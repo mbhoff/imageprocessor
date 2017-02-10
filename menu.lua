@@ -59,7 +59,7 @@ imageMenu("Point processes",
   
     {"Contrast Adjustment with Linear Ramp", myip.contrastAdjustmentWithLinearRamp, {{name = "min", type = "number", displaytype = "spin", default = 50, min = 0, max = 255},{name = "max", type = "number", displaytype = "spin",     default = 100, min = 0, max = 255}}},
   
-    {"Gamma", myip.gamma, {{name = "gamma", type = "number", displaytype = "textbox", default = "1.0"}, {name = "color model", type = "string", default = "rgb"}}},
+    {"Gamma", myip.gamma, {{name = "gamma", type = "number", displaytype = "textbox", default = "1.0"}}},
     
     {"Log Transformation", myip.logTransformation},
   
@@ -67,21 +67,19 @@ imageMenu("Point processes",
   
     {"Continuous Pseudocolor", myip.continuousPseudocolor},
   
-    {"Automated Contrast Stretch", myip.automatedContrastStretch, {{name = "color model", type = "string", default = "yiq"}}},
+    {"Automated Contrast Stretch", myip.automatedContrastStretch},
   
-    {"Specified Contrast Stretch", myip.specifiedContrastStretch, hotkey = "C-H", {{name = "lp", type = "number", displaytype = "spin", default = 1, min = 0, max = 100}, {name = "rp", type = "number", displaytype = "spin", default = 99, min = 0, max = 100}, {name = "color model", type = "string", default = "yiq"}}},
+    {"Specified Contrast Stretch", myip.specifiedContrastStretch, hotkey = "C-H", {{name = "lp", type = "number", displaytype = "spin", default = 1, min = 0, max = 100}, {name = "rp", type = "number", displaytype = "spin", default = 99, min = 0, max = 100}}},
   
-    {"Display Histogram", il.showHistogram,
-       {{name = "color model", type = "string", default = "yiq"}}},
+    {"Display Histogram", il.showHistogram},
   
     {"Bitplane Slice", myip.bitplaneSlice,
       {{name = "plane", type = "number", displaytype = "spin", default = 7, min = 0, max = 7}}},
   
-    {"Histogram Equalize", myip.histogramEqualization, {{name = "color model", type = "string", default = "yiq"}}},
+    {"Histogram Equalize", myip.histogramEqualization},
   
     {"Histogram Equalize Clip", myip.histogramEqualizationWithClipping,
-      {{name = "clip %", type = "number", displaytype = "textbox", default = "1.0"},
-       {name = "color model", type = "string", default = "yiq"}}},
+      {{name = "clip %", type = "number", displaytype = "textbox", default = "1.0"}}},
   
     {"Image Subtraction", myip.imageSubtraction, {{name = "image", type = "image"}}},
   

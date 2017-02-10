@@ -193,7 +193,7 @@ Where g is the gamma value.
 The image is clipped so values are between 0 and 255.
 
 --]]
-local function gamma( img, g, c )
+local function gamma( img, g )
 
   
   img = il.RGB2YIQ(img)
@@ -220,8 +220,10 @@ Function: logTransformation
 Applies a log transformation to the image
 to modify the dynamic range of the image.
 
+The log transformation sets the y value
+equal to (math.log(y + 1) / math.log(256)) * 255
 --]]
-local function logTransformation( img, g, c )
+local function logTransformation( img )
 
   
   img = il.RGB2YIQ(img)
@@ -229,7 +231,6 @@ local function logTransformation( img, g, c )
   
   img = img:mapPixels(function( y, i, q)
       
-      --y = 255 * math.log((y/255)+1)
       y = (math.log(y + 1) / math.log(256)) * 255
       
       y = clipValue(y)
@@ -327,7 +328,7 @@ The y value of the pixels is set to the following formula:
 (y - min) * (255 /(max - min))
 
 --]]
-local function automatedContrastStretch( img, colormodel )
+local function automatedContrastStretch( img )
   
   local min = 255
   local max = 0
@@ -341,8 +342,6 @@ local function automatedContrastStretch( img, colormodel )
   end
   
   img = img:mapPixels(function( y, i, q)
-
-      --y = constant * (y - min)
       
       y = (y-min) * (255/(max-min))
       
@@ -366,7 +365,7 @@ The y value of the pixels is set to the following formula:
 
 --]]
 
-local function specifiedContrastStretch( img, min, max, colormodel )
+local function specifiedContrastStretch( img, min, max )
     
   img = il.RGB2YIQ(img)
   
@@ -379,10 +378,9 @@ local function specifiedContrastStretch( img, min, max, colormodel )
       return y, i, q
     end
   )
+  
 
   img = img:mapPixels(function( y, i, q)
-
-      --y = constant * (y - min)
       
       y = (y-min) * (255/(max-min))
       
@@ -423,7 +421,7 @@ the pixel intensity values are are mapped to their value at
 lookuptable[y+1] 
 
 --]]
-local function histogramEqualization(img, colormodel)
+local function histogramEqualization( img )
 
   --make histogram
   img = il.RGB2YIQ(img)
@@ -439,6 +437,8 @@ local function histogramEqualization(img, colormodel)
   
   local a = 256 / (img.width * img.height)
   
+  --create a lookup table of cumulative probabilities
+  --for each intensity
   local lookUpTable = {}
   lookUpTable[1] = a * histogram[1]
   for i = 2, 256 do 
@@ -446,7 +446,7 @@ local function histogramEqualization(img, colormodel)
     lookUpTable[i] = clipValue(lookUpTable[i])
     end
   
-  --get probabilities, map to intensities
+  --map lookuptable values to pixel intensities
   img = img:mapPixels(function( y, i, q)
       
   y = lookUpTable[y+1]
@@ -468,17 +468,19 @@ Equalizes the image intensities and clips the percentage
 of pixels specified. Creates a histogram of the intensity
 values, clipping each intensity frequency to
 (pixels in image)*(clip percentage/100).
+
 The sum of all frequencies in the histogram is counted
 and used as the new number of pixels when calculating the alpha value
 for the cumulative distribution function. The lookupTable stores
 cummulative probability values for each intensity.
 The intensities are normalized, and set equal to the y value of yiq image.
 --]]
-local function histogramEqualizationWithClipping(img, clipval, colormodel)
+local function histogramEqualizationWithClipping(img, clipval)
 
-  --make histogram
+
   img = il.RGB2YIQ(img)
   
+  --make histogram
   local histogram = {}
   for i = 1, 256 do histogram[i] = 0 end
   
@@ -507,12 +509,14 @@ local function histogramEqualizationWithClipping(img, clipval, colormodel)
   local lookUpTable = {}
   lookUpTable[1] = math.floor((a * histogram[1])+0.5)
   
+  --create a lookup table of cumulative probabilities
+  --for each intensity
   for i = 2, 256 do 
     lookUpTable[i] = math.floor( (lookUpTable[i-1] + a * histogram[i])+0.5)
-    --lookUpTable[i] = clipValue(lookUpTable[i])
+    lookUpTable[i] = clipValue(lookUpTable[i])
     end
   
-  --get probabilities, map to intensities
+  --map lookuptable values to pixel intensities
   img = img:mapPixels(function( y, i, q)
       
     y = lookUpTable[y+1]
@@ -547,6 +551,8 @@ local function bitplaneSlice( img, plane )
   
   img = grayscale(img)
   
+  --table of bit masks for each plane
+  --that we want to extract
   local maskTable = {}
     maskTable[0] = 1   --00000001
     maskTable[1] = 2   --00000010
@@ -587,7 +593,9 @@ The function subracts the rgb values of each pixel
 of the the passed in image from the original image.
 --]]
 local function imageSubtraction( img1, img2 )
-      
+    
+    
+    --if the images aren't the same size, return the original image
     if img1.height ~= img2.height or img1.width ~= img2.width
     then return img1
     end
@@ -597,9 +605,9 @@ local function imageSubtraction( img1, img2 )
     
     for r = 0, rows-1 do
       for c = 0, cols-1 do
-        -- negate each RGB channel
-        for ch = 0, 2 do
-          img1:at(r,c).rgb[ch] = img1:at(r,c).rgb[ch] - img2:at(r,c).rgb[ch]
+        -- subtract each rgb channel
+        for channel = 0, 2 do
+          img1:at(r,c).rgb[channel] = img1:at(r,c).rgb[channel] - img2:at(r,c).rgb[channel]
         end
       end
     end
