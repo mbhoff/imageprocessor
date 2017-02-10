@@ -359,25 +359,19 @@ local function automatedContrastStretch( img )
 --[[
 Function: specifiedContrastStretch 
 This function adds a contrast stretch to the image,
-for the range of min and max values passed in.
+using the min and max values passed in.
 The y value of the pixels is set to the following formula:
 (y - min) * (255 /(max - min))
+
+-Bug Note: This function should use a histogram to find the
+min and max, but I wasn't able to figure out what
+the input percentages cooresponded to in the histogram.
 
 --]]
 
 local function specifiedContrastStretch( img, min, max )
     
   img = il.RGB2YIQ(img)
-  
-  
-  local histogram = {}
-  for i = 1, 256 do histogram[i] = 0 end
-  
-  img:mapPixels(function( y, i, q)
-      histogram[y+1] = histogram[y+1] + 1
-      return y, i, q
-    end
-  )
   
 
   img = img:mapPixels(function( y, i, q)
@@ -594,8 +588,9 @@ of the the passed in image from the original image.
 --]]
 local function imageSubtraction( img1, img2 )
     
-    
-    --if the images aren't the same size, return the original image
+    --if the images aren't the same size
+    --does not subtract
+    --returns the original image
     if img1.height ~= img2.height or img1.width ~= img2.width
     then return img1
     end
