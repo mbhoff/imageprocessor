@@ -328,7 +328,7 @@ local function specifiedContrastStretch( img, min, max, colormodel )
 
 
 local function histogramEqualization(img, colormodel)
-  print("HERE I AM!")
+
   --make histogram
   img = il.RGB2YIQ(img)
   
@@ -386,8 +386,7 @@ local function histogramEqualizationWithClipping(img, clipval, colormodel)
   
   
   local maxval = (img.width * img.height) * (clipval / 100)
-  print(clipval)
-  print(maxval)
+
   for i = 1, 256 do      
       if histogram[i] > maxval then histogram[i] = maxval end
       
