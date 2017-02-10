@@ -332,28 +332,28 @@ local function histogramEqualization(img, colormodel)
   --make histogram
   img = il.RGB2YIQ(img)
   
-  local table = {}
-  for i = 1, 256 do table[i] = 0 end
+  local histogram = {}
+  for i = 1, 256 do histogram[i] = 0 end
   
   img:mapPixels(function( y, i, q)
-      table[y+1] = table[y+1] +1
+      histogram[y+1] = histogram[y+1] +1
       return y, i, q
     end
   )
   
   local a = 256 / (img.width * img.height)
   
-  local lookuptable = {}
-  lookuptable[1] = a * table[1]
+  local lookUpTable = {}
+  lookUpTable[1] = a * histogram[1]
   for i = 2, 256 do 
-    lookuptable[i] = lookuptable[i-1] + a * table[i]
-    lookuptable[i] = clipValue(lookuptable[i])
+    lookUpTable[i] = lookUpTable[i-1] + a * histogram[i]
+    lookUpTable[i] = clipValue(lookUpTable[i])
     end
   
   --get probabilities, map to intensities
   img = img:mapPixels(function( y, i, q)
       
-  y = lookuptable[y+1]
+  y = lookUpTable[y+1]
 
   return y, i, q
   
@@ -368,15 +368,15 @@ end
   
   
 local function histogramEqualizationWithClipping(img, clipval, colormodel)
-  print("HERE I AM!")
+
   --make histogram
   img = il.RGB2YIQ(img)
   
-  local table = {}
-  for i = 1, 256 do table[i] = 0 end
+  local histogram = {}
+  for i = 1, 256 do histogram[i] = 0 end
   
   img:mapPixels(function( y, i, q)
-      table[y+1] = table[y+1] + 1
+      histogram[y+1] = histogram[y+1] + 1
       return y, i, q
     end
   )
@@ -389,27 +389,27 @@ local function histogramEqualizationWithClipping(img, clipval, colormodel)
   print(clipval)
   print(maxval)
   for i = 1, 256 do      
-      if table[i] > maxval then table[i] = maxval end
+      if histogram[i] > maxval then histogram[i] = maxval end
       
-      sum = sum + table[i]
+      sum = sum + histogram[i]
       
     end 
   
     
   local a = 256 / sum
   
-  local lookuptable = {}
-  lookuptable[1] = math.floor((a * table[1])+0.5)
+  local lookUpTable = {}
+  lookUpTable[1] = math.floor((a * histogram[1])+0.5)
   
   for i = 2, 256 do 
-    lookuptable[i] = math.floor( (lookuptable[i-1] + a * table[i])+0.5)
-    lookuptable[i] = clipValue(lookuptable[i])
+    lookUpTable[i] = math.floor( (lookUpTable[i-1] + a * histogram[i])+0.5)
+    lookUpTable[i] = clipValue(lookUpTable[i])
     end
   
   --get probabilities, map to intensities
   img = img:mapPixels(function( y, i, q)
       
-    y = lookuptable[y+1]
+    y = lookUpTable[y+1]
 
     return y, i, q
   
