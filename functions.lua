@@ -72,25 +72,41 @@ local function grayscale( img )
   )
 end
 
-
+--[[
+Function: Binary Threshold  
+Converts an image to grayscale, then compares
+the grayscale intensity of each pixel to
+the threshold value passed in. If the
+pixel's intensity is greater than the threshhold
+it is set to white, otherwise it is set to black.
+--]]
 local function bthreshold( img, threshold )
   
   return img:mapPixels(function( r, g, b )
-    local temp = r * .30 + g * .59 + b * .11
+    local pixelValue = r * .30 + g * .59 + b * .11
 
     
-      if temp >= threshold
-        then temp = 255
-      else temp = 0
+      if pixelValue >= threshold
+        then pixelValue = 255
+      else pixelValue = 0
     end
     
-      return temp, temp, temp
+      return pixelValue, pixelValue, pixelValue
     end
     )
 end
 
 
+--[[
+Function: Posterize  
+Converts an image to a posterized image by
+converting the image to yiq, dividing
+the image by a delta value (255/number of levels of posterization) + 1
+and multiplying by the delta.
 
+That value is floored, and clipped, and returned as the y
+value for the new yiq pixel.
+--]]
 local function posterize( img, levels )
   
   img = il.RGB2YIQ(img)
@@ -113,7 +129,13 @@ local function posterize( img, levels )
   end
 
 
-
+--[[
+Function: Brightness
+Increases or decreases the brightness of the image
+by adding the brightness passed in to the y of
+each pixel in a yiq image. Clips values to
+be between 0 and 255.
+--]]
 local function brightness( img, brightness )
 
   
@@ -134,7 +156,11 @@ local function brightness( img, brightness )
 end
 
 
-
+--[[
+Function: contrastAdjustmentWithLinearRamp
+Contrast is adjusted with a linear
+ramp between the min and max values passed in.
+--]]
 local function contrastAdjustmentWithLinearRamp( img, min, max )
 
   
@@ -159,7 +185,16 @@ local function contrastAdjustmentWithLinearRamp( img, min, max )
   end
 
 
+--[[
+Function: Gamma
+This function modifies the gamma value of the image
+by converting to yiq, and applying the following
+formula to the y intensity of each pixel:
+y = 255 * (y/255)^g
+Where g is the gamma value.
+The image is clipped so values are between 0 and 255.
 
+--]]
 local function gamma( img, g, c )
 
   
@@ -182,7 +217,12 @@ local function gamma( img, g, c )
   end
 
 
+--[[
+Function: logTransformation
+Applies a log transformation to the image
+to modify the dynamic range of the image.
 
+--]]
 local function logTransformation( img, g, c )
 
   
@@ -205,7 +245,13 @@ local function logTransformation( img, g, c )
   end
 
 
-
+--[[
+Function: discretePseudocolor 
+This function adds 8 values of psuedocolor
+to an image. The image is converted to greyscale,
+and the grayscale value of each pixel is used to assign it
+to one of the 8 colors.
+--]]
 local function discretePseudocolor( img )
   
       
@@ -228,6 +274,18 @@ local function discretePseudocolor( img )
 end
 
 
+
+--[[
+Function: continuousPseudocolor 
+This function adds up to 255 values of psuedocolor
+to an image. The image is converted to greyscale,
+and the grayscale value of each pixel is used as an input to
+3 functions - one for r, g, and b values.
+
+These functions are parabolic functions with slight horizontal offsets
+from each other so that they overlap some values, creating a gradient
+effect.
+--]]
 local function continuousPseudocolor( img )
   
   img = grayscale(img);
@@ -262,7 +320,15 @@ local function continuousPseudocolor( img )
   
 end
 
+--[[
+Function: automatedContrastStretch 
+This function adds a contrast stretch to the image,
+with min and max values set to the highest and lowest
+intensities in the image.
+The y value of the pixels is set to the following formula:
+(y - min) * (255 /(max - min))
 
+--]]
 local function automatedContrastStretch( img, colormodel )
   
   local min = 255
@@ -293,7 +359,14 @@ local function automatedContrastStretch( img, colormodel )
   end
 
 
+--[[
+Function: specifiedContrastStretch 
+This function adds a contrast stretch to the image,
+for the range of min and max values passed in.
+The y value of the pixels is set to the following formula:
+(y - min) * (255 /(max - min))
 
+--]]
 
 local function specifiedContrastStretch( img, min, max, colormodel )
     
@@ -326,7 +399,15 @@ local function specifiedContrastStretch( img, min, max, colormodel )
   end
 
 
+--[[
+Function: histogramEqualization
+Equalizes the image intensities by creating a
+histogram of the intensity values, and a lookupTable
+of cummulative probability values for each intensity.
+The intensities are normalized with the cumulative
+probabilities.
 
+--]]
 local function histogramEqualization(img, colormodel)
 
   --make histogram
@@ -366,7 +447,14 @@ local function histogramEqualization(img, colormodel)
 end  
   
   
-  
+--[[
+Function: histogramEqualizationWithClipping
+Equalizes the image intensities and clips the percentage
+of pixel intensities passed in. Creates a histogram of the intensity
+values, and a lookupTable of cummulative probability values for each intensity.
+The intensities are normalized with the cumulative
+probabilities.
+--]]
 local function histogramEqualizationWithClipping(img, clipval, colormodel)
 
   --make histogram
@@ -420,7 +508,28 @@ local function histogramEqualizationWithClipping(img, clipval, colormodel)
   return img
   
 end
-  
+
+
+--[[
+Function: bitplaneSlice
+Gets the image at the bitplane specified.
+In this case it is the 0-7th bitplane.
+To get the image at that bitplane,
+the image is converted to grayscale,
+and the grey values of each pixel are
+bitwise anded with a bitstring with the bit
+of the desired plane flipped.
+
+The result of this bitwise and determines whether
+there is a color value in that plane or not.
+
+Since this is a subtractive color system,
+anything that is nonzero is color.
+
+We set all color values to white, to produce
+a binary image.
+
+--]]
 local function bitplaneSlice( img, plane )
   
   img = grayscale(img)
@@ -456,7 +565,14 @@ local function bitplaneSlice( img, plane )
   return img
   end
   
-
+--[[
+Function: imageSubtraction
+Subtracts an image from the current image.
+The images must be the same size, otherwise the function
+will return the original image with no change.
+The function subracts the rgb values of each pixel
+of the the passed in image from the original image.
+--]]
 local function imageSubtraction( img1, img2 )
       
     if img1.height ~= img2.height or img1.width ~= img2.width
